@@ -39,6 +39,7 @@ class CustomKeypad
         case 4:
           this->Append_USER_INPUT(key);
           lcdf.print(key);
+          matrix.neutral();
           break;
       }
     }
@@ -60,21 +61,25 @@ class CustomKeypad
 
     void Enter()
     {
-      if (lcdf.GetScreen() == 5) // not in switch statement to circumvent error; the line would not be read
-        lcdf.screen8(0);
+      matrix.blink();
         
       switch (lcdf.GetScreen())
       {
         case 2:
+          matrix.called = false;
           lcdf.screen3();
           break;
 
         case 4:
+          if (USER_INPUT == "") return;
+
+          matrix.smile();
           double amount = USER_INPUT.toDouble();
 
           if (!CURRENT_USER->BalanceSub(amount * TOKEN.VALUE))
           {
             lcdf.screen9(amount);
+            Reset_USER_INPUT();
             return;
           }
 
@@ -133,19 +138,25 @@ class CustomKeypad
       switch (option)
       {
         case 'A':
+          matrix.smile();
           lcdf.screen4();
+          delay(750);
+          matrix.blink();
           break;
 
         case 'B':
           lcdf.screen5();
+          matrix.sell_animation();
           break;
 
         case 'C':
           lcdf.screen6();
+          matrix.look_at_7seg();
           break;
 
         case 'D':
           lcdf.screen7();
+          matrix.look_at_7seg();
           break;
       }
     }
