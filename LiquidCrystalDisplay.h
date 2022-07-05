@@ -182,6 +182,7 @@ class LiquidCrystalDisplay20x4
      */
     void screen3()
     {
+      matrix.smile();
       this->SCREEN = 3;
       _lcdf.clear();
       this->home();
