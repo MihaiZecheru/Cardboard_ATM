@@ -5,7 +5,7 @@
 #ifndef RFID_READER_H
 #define RFID_READER_H
 
-class RFID_reader : public MFRC522
+class RFIDreader : public MFRC522
 {
     private:
       bool READER_AVAILABLE;
@@ -33,7 +33,7 @@ class RFID_reader : public MFRC522
       
     public:
       /* SDA pin = 53; RESET pin = 2 */
-      RFID_reader(const uint8_t SDA_PIN, const uint8_t RST_PIN) : MFRC522(SDA_PIN, RST_PIN)
+      RFIDreader(const uint8_t SDA_PIN, const uint8_t RST_PIN) : MFRC522(SDA_PIN, RST_PIN)
       {
         this->READER_AVAILABLE = true;
         this->PAST_RFID = 0;
