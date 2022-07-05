@@ -10,6 +10,11 @@ Token TOKEN(4.25);
 
 // ---------------------------------------------------------------------- LEDs
 
+#include "LightMatrix.h"
+Matrix matrix(8, 7, 6); // DIN = 8, CS = 7, CLK = 6
+
+// ---------------------------------------------------------------------- 7-seg
+
 #include "LED.h"
 LED GreenLED(46);
 LED RedLED(47);
@@ -31,8 +36,8 @@ Dispenser DISPENSER(9, 10, 11, 12);
 
 // ---------------------------------------------------------------------- RFID
 
-#include "RFID_reader.h"
-RFID_reader RFID(53, 2);
+#include "RFIDreader.h"
+RFIDreader RFID(53, 2);
 bool CARD_ALREADY_REMOVED = true;
 
 // ---------------------------------------------------------------------- LCD
@@ -62,16 +67,15 @@ void Token::DisplayValue()
 
 void setup()
 {
-//  RESET_USER_DATABASE();
-
+  //  RESET_USER_DATABASE();
   lcdf.init();
 
   InitializeUsers();
-  SPI.begin(); 
+  SPI.begin();
   RFID.PCD_Init();
 
   lcdf.finish_setup();
-  Serial.begin(9600);     
+  Serial.begin(9600);
 }
 
 void loop()
@@ -91,7 +95,7 @@ void loop()
   }
 
   kp.HandleKeypress();
-  
+
   if (RFID.CheckForNewCard())
   {
     if (!RFID.exists())
@@ -109,6 +113,7 @@ void loop()
     lcdf.screen2();
     CARD_ALREADY_REMOVED = false;
     PREVENT_GLED_SHOW = false;
+    matrix.smile();
   }
 
   if (RFID.CardRemoved())
@@ -117,11 +122,13 @@ void loop()
     {
       GreenLED.Hide();
       RedLED.Hide();
-      
+
       lcdf.screen1();
       RFID.AllowSameUser();
       kp.Reset_USER_INPUT();
-      
+
+      matrix.credit_card_removed_animation();
+
       CURRENT_USER = nullptr;
       CARD_ALREADY_REMOVED = true;
     }
@@ -131,6 +138,6 @@ void loop()
     if (RFID.exists() && !PREVENT_GLED_SHOW)
       GreenLED.Show();
   }
-  
+
   return;
 }
