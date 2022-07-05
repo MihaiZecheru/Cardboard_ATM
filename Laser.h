@@ -25,7 +25,11 @@ class Laser
       const bool interrupted = digitalRead(detectPin) == LOW;
 
       if (interrupted)
-        delay(100);
+      {
+        // wait until token is gone to prevent bug where the token would be scanned twice
+        while (digitalRead(detectPin) == LOW)
+          delay(5);
+      }
 
       return interrupted;
     }
